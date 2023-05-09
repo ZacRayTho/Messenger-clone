@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 import client from "@/redis";
 import { Redis } from "ioredis";
 import { Message } from "@/typings";
@@ -12,25 +12,22 @@ type ErrorData = {
 };
 
 export async function POST(
-  req: NextApiRequest,
-  res: NextApiResponse<Data | ErrorData>
+  req: Request
 ) {
-  console.log(req.body, "HERE API");
-  if (req.method !== "POST") {
-    res.status(405).json({ body: "Method not allowed" });
-    return;
-  }
+  const res = await req.json();
 
-  const { message } = req.body;
-console.log(message, "WHAT ABOUT HERE")
+  const  message  = res.Message;
+
   const newMessage = {
     ...message,
     //Replace the timestamp of the user to the timestamp of the server
     created_at: Date.now(),
   };
 
+  console.log(newMessage, "AFTER REPLACING")
+
   //push to upstash redis db
   await client.hset("messages", message.id, JSON.stringify(newMessage));
 
-  res.status(200).json({ message: newMessage });
+  return NextResponse.json({ message: newMessage });
 }

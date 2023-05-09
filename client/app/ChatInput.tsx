@@ -2,10 +2,14 @@
 import { Message } from "@/typings";
 import React, { FormEvent, useState } from "react";
 import { v4 as uuid } from "uuid";
-import axios from "axios";
+import useSWR from "swr";
+import fetcher from "@/utils/fetchMessages";
 
 function ChatInput() {
   const [input, setInput] = useState("");
+  const { data, error, mutate } = useSWR("/api/getMessages", fetcher)
+
+  console.log(data)
 
   const addMessage = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,10 +38,11 @@ function ChatInput() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ Message: message }),
       });
+ 
       const data = await res.json();
-      console.log('Message Added>>>', data)
+
     };
 
     uploadMessageToUpstash();
