@@ -7,11 +7,11 @@ import fetcher from "@/utils/fetchMessages";
 
 function ChatInput() {
   const [input, setInput] = useState("");
-  const { data, error, mutate } = useSWR("/api/getMessages", fetcher)
+  const { data: messages, error, mutate } = useSWR("/api/getMessages", fetcher)
 
-  console.log(data)
+  // console.log(messages, "DATA RETURNS THE SEQUEL")
 
-  const addMessage = (e: FormEvent<HTMLFormElement>) => {
+  const addMessage = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!input) return;
@@ -31,27 +31,30 @@ function ChatInput() {
       email: "zking6999@gmail.com",
     };
     
-    console.log(JSON.stringify({ message }), "HERE Input")
     const uploadMessageToUpstash = async () => {
-      const res = await fetch("/api/addMessage", {
+      const data = await fetch("/api/addMessage", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ Message: message }),
-      });
+      }).then(res => res.json())
  
-      const data = await res.json();
-
+      return [data.message, ...messages!]
+      
+      
     };
 
-    uploadMessageToUpstash();
+    await mutate(uploadMessageToUpstash, {
+      optimisticData: [message, ...messages!],
+      rollbackOnError: true,
+    })
   };
 
   return (
     <form
       onSubmit={addMessage}
-      className="fixed bottom-0 z-50 w-full flex px-10 py-5 space-x-2 border-t border-gray-500"
+      className="fixed bottom-0 z-50 w-full flex px-10 py-5 space-x-2 border-t border-gray-500 bg-white"
     >
       <input
         placeholder="Enter message here..."
@@ -59,6 +62,7 @@ function ChatInput() {
         focus:ring-blue-600 focus:border-transparent px-5 py-3 disabled:opacity-50 
         disabled:cursor-not-allowed"
         type="text"
+        value={input}
         onChange={(e) => {
           setInput(e.target.value);
         }}

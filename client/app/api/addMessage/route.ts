@@ -24,8 +24,6 @@ export async function POST(
     created_at: Date.now(),
   };
 
-  console.log(newMessage, "AFTER REPLACING")
-
   //push to upstash redis db
   await client.hset("messages", message.id, JSON.stringify(newMessage));
 
