@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import client from "@/redis";
 import { Redis } from "ioredis";
 import { Message } from "@/typings";
+import { serverPusher } from "@/pusher";
 
 type Data = {
   message: Message;
@@ -26,6 +27,7 @@ export async function POST(
 
   //push to upstash redis db
   await client.hset("messages", message.id, JSON.stringify(newMessage));
+  serverPusher.trigger('messages', 'new-message', newMessage)
 
   return NextResponse.json({ message: newMessage });
 }
