@@ -1,19 +1,29 @@
-import Image from "next/image";
 import MessageList from "./MessageList";
 import ChatInput from "./ChatInput";
+import client from "@/redis";
+import { Message } from "@/typings";
 
 export default async function Home() {
-  const data = await fetch(`${process.env.VERCEL_URL}/api/getMessages`).then(
-    (res) => 
-    console.log(res, 'HERE>>m<>m'),
-    // res.json()
-  );
+ 
+  async function ServerMessages() {
+    const messagesRes = await client.hvals("messages");
+  
+  //   console.log(messagesRes, 'HERE<<<<<<')
+    const messages: Message[] = messagesRes
+      .map((message) => JSON.parse(message))
+      .sort((a, b) => a.created_at - b.created_at);
+  
+    
+    return { messages };
+  }
 
-  // console.log(data, "HERE>>>")
+  const data = await ServerMessages();
+
+  const messages: Message[] = data.messages;
 
   return (
     <main>
-      <MessageList />
+      <MessageList  initialMessages={messages}/>
       <ChatInput />
     </main>
   );
