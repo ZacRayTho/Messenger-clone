@@ -16,7 +16,7 @@ function MessageList({ initialMessages }: Props) {
     error,
     mutate,
   } = useSWR<Message[]>("/api/getMessages", fetcher);
-
+  console.log(messages)
   useEffect(() => {
     const channel = clientPusher.subscribe("messages");
 
