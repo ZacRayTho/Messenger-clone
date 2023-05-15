@@ -1,23 +1,11 @@
+'use client'
+import React from "react";
+import { signIn } from "next-auth/react"
 
-import { getProviders } from "next-auth/react";
-import React, { useEffect, useState } from "react";
-
-type Props = {
-  providers: Awaited<ReturnType<typeof getProviders>>;
-};
-
-function SignInComponent({ providers }: Props) {
-  if (!providers) {
-    return null;
-  }
-
+function SignInComponent() {
   return (
     <div>
-      {Object.values(providers!).map((provider) => (
-        <div key={provider.name}>
-          <button>Sign in with {provider.name}</button>
-        </div>
-      ))}
+      <button onClick={() => signIn(process.env.FACEBOOK_CLIENT_ID)}>Sign in with Facebook</button>
     </div>
   );
 }
