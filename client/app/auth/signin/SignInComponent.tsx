@@ -1,16 +1,16 @@
-"use client";
+
 import { getProviders } from "next-auth/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 type Props = {
   providers: Awaited<ReturnType<typeof getProviders>>;
 };
 
 function SignInComponent({ providers }: Props) {
-
   if (!providers) {
-    return null
+    return null;
   }
+
   return (
     <div>
       {Object.values(providers!).map((provider) => (
