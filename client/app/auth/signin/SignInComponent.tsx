@@ -1,13 +1,21 @@
-'use client'
+"use client";
 import React from "react";
-import { signIn } from "next-auth/react"
+import { getProviders, signIn } from "next-auth/react";
 
 function SignInComponent() {
   return (
-    <div>
-      <button onClick={() => signIn(process.env.FACEBOOK_CLIENT_ID, {
-        callbackUrl: "https://3000-zacraytho-messengerclon-jnnmibw4iff.ws-us97.gitpod.io"
-      })}>Sign in with Facebook</button>
+    <div className="flex justify-center">
+      <button
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        onClick={() =>
+          signIn("facebook", {
+            callbackUrl:
+              "https://3000-zacraytho-messengerclon-jnnmibw4iff.ws-us97.gitpod.io/",
+          })
+        }
+      >
+        Sign in with Facebook
+      </button>
     </div>
   );
 }

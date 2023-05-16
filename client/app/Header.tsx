@@ -4,7 +4,7 @@ import React from "react";
 import LogoutButton from "./LogoutButton";
 
 function Header() {
-  const session = false;
+  const session = true;
 
   if (session)
     return (
