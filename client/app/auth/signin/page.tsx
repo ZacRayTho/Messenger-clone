@@ -1,8 +1,13 @@
+"use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import SignInComponent from "./SignInComponent";
+import { getProviders } from "next-auth/react";
 
 async function SignInPage() {
+  const providers = await getProviders();
+  console.log(providers);
+
   return (
     <div>
       <div>
